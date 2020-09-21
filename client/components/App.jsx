@@ -45,7 +45,7 @@ class App extends React.Component {
       });
     }
   }
-
+// This sends a request to the proxy server
   getProductId() {
     axios
       .get('/productId')
