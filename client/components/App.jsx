@@ -39,13 +39,15 @@ class App extends React.Component {
   }
 
   setSearchPerformed() {
-    if (this.state.searchPerformed === false) {
+    const { searchPerformed } = this.state;
+    if (searchPerformed === false) {
       this.setState({
         searchPerformed: true,
       });
     }
   }
-// This sends a request to the proxy server
+
+  // This sends a request to the proxy server
   getProductId() {
     axios
       .get('/productId')
@@ -60,8 +62,9 @@ class App extends React.Component {
   }
 
   getReviews() {
+    const { productId } = this.state;
     axios
-      .get(`/reviews/${this.state.productId}`)
+      .get(`/reviews/${productId}`)
       .then((data) => {
         this.setState({
           reviews: data.data,
@@ -85,16 +88,19 @@ class App extends React.Component {
   }
 
   calculateTotalReviews() {
+    const { reviews } = this.state;
     this.setState({
-      totalReviews: this.state.reviews.length,
+      totalReviews: reviews.length,
     });
   }
 
   calculateAvgRating() {
-    // iterate over each review and extract the rating value, add them together, then divide by the totalReviews
-    const total = this.state.reviews.reduce((accumulator, currentValue) => accumulator + currentValue.rating, 0);
+    const { reviews } = this.state;
+    const reducer = (accumulator, currentValue) => accumulator + currentValue.rating;
+    // Iterate over each review & extract rating value, add together, then divide by totalReviews.
+    const total = reviews.reduce(reducer, 0);
     // console.log(total);
-    const avgRating = (total / this.state.reviews.length).toPrecision(2);
+    const avgRating = (total / reviews.length).toPrecision(2);
     // console.log(avgRating);
     this.setState({
       avgRating: parseFloat(avgRating),
@@ -107,12 +113,40 @@ class App extends React.Component {
   }
 
   render() {
+    const {
+      totalReviews,
+      avgRating,
+      productId,
+      reviews,
+      searchResults,
+      searchPerformed,
+      currentPageOfReviews,
+      activePage,
+    } = this.state;
     return (
       <div>
         <div className="reviews-wrapper">
-          <ReviewsCounter totalReviews={this.state.totalReviews} avgRating={this.state.avgRating} />
-          <ReviewsSearch productId={this.state.productId} reviews={this.state.reviews} setAppState={this.setAppState} setSearchPerformed={this.setSearchPerformed} calculateTotalReviews={this.calculateTotalReviews} calculateAvgRating={this.calculateAvgRating} />
-          <ReviewsList reviews={this.state.reviews} searchResults={this.state.searchResults} searchPerformed={this.state.searchPerformed} currentPageOfReviews={this.state.currentPageOfReviews} activePage={this.state.activePage} setAppState={this.setAppState} scrollToReviewsList={this.scrollToReviewsList} />
+          <ReviewsCounter
+            totalReviews={totalReviews}
+            avgRating={avgRating}
+          />
+          <ReviewsSearch
+            productId={productId}
+            reviews={reviews}
+            setAppState={this.setAppState}
+            setSearchPerformed={this.setSearchPerformed}
+            calculateTotalReviews={this.calculateTotalReviews}
+            calculateAvgRating={this.calculateAvgRating}
+          />
+          <ReviewsList
+            reviews={reviews}
+            searchResults={searchResults}
+            searchPerformed={searchPerformed}
+            currentPageOfReviews={currentPageOfReviews}
+            activePage={activePage}
+            setAppState={this.setAppState}
+            scrollToReviewsList={this.scrollToReviewsList}
+          />
         </div>
       </div>
     );
