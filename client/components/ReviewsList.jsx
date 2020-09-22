@@ -3,81 +3,67 @@ import PropTypes from 'prop-types';
 import Pagination from 'react-js-pagination';
 import ReviewsEntry from './ReviewsEntry.jsx';
 
-class ReviewsList extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-    this.handlePageChange = this.handlePageChange.bind(this);
-  }
-
-  handlePageChange(pageNumber) {
-    const {
-      setAppState,
-      searchPerformed,
-      reviews,
-      searchResults,
-    } = this.props;
+const ReviewsList = ({
+  currentPageOfReviews,
+  activePage,
+  scrollToReviewsList,
+  setAppState,
+  searchPerformed,
+  reviews,
+  searchResults,
+}) => {
+  const handlePageChange = (pageNumber) => {
     // console.log(`active page is ${pageNumber}`);
     const offset = (pageNumber - 1) * 10;
     setAppState('activePage', pageNumber);
     setAppState('currentPageOfReviews', (!searchPerformed ? reviews.slice(offset, offset + 10) : searchResults.slice(offset, offset + 10)));
-  }
+  };
 
-  render() {
-    const {
-      currentPageOfReviews,
-      activePage,
-      scrollToReviewsList,
-      searchPerformed,
-      reviews,
-      searchResults,
-    } = this.props;
-    return (
-      <div className="review-list">
-        {currentPageOfReviews.length
-          ? (
-            <aside>
-              {currentPageOfReviews.map((review) => (
-                <ReviewsEntry
-                  key={review.id}
-                  review={review}
-                />
-              ))}
-              <p className="displaying-reviews-text">
-                Displaying Reviews
-                <b>
-                  {' '}
-                  {(activePage - 1) * 10 + 1}
-                  {' '}
-                  -
-                  {' '}
-                  {currentPageOfReviews.length >= 10
-                    ? activePage * 10
-                    : (activePage - 1) * 10 + currentPageOfReviews.length}
-                </b>
-              </p>
-              <button type="button" className="reviews-scroll-to-top" onClick={scrollToReviewsList}>
-                <b>Back to Top</b>
-              </button>
-            </aside>
-          )
-          : <h3 className="noResults">Sorry, no results were found</h3>}
-        <Pagination
-          hideDisabled
-          activePage={activePage}
-          itemsCountPerPage={10}
-          totalItemsCount={!searchPerformed ? reviews.length : searchResults.length}
-          prevPageText="<< Previous"
-          nextPageText="Next >>"
-          hideFirstLastPages
-          pageRangeDisplayed={1}
-          onChange={this.handlePageChange}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className="review-list">
+      {currentPageOfReviews.length
+        ? (
+          <aside>
+            {currentPageOfReviews.map((review) => (
+              <ReviewsEntry
+                key={review.id}
+                review={review}
+              />
+            ))}
+            <p className="displaying-reviews-text">
+              Displaying Reviews
+              <b>
+                {' '}
+                {(activePage - 1) * 10 + 1}
+                {' '}
+                -
+                {' '}
+                {currentPageOfReviews.length >= 10
+                  ? activePage * 10
+                  : (activePage - 1) * 10 + currentPageOfReviews.length}
+              </b>
+            </p>
+            <button type="button" className="reviews-scroll-to-top" onClick={scrollToReviewsList}>
+              <b>Back to Top</b>
+            </button>
+          </aside>
+        )
+        : <h3 className="noResults">Sorry, no results were found</h3>}
+      <Pagination
+        hideDisabled
+        activePage={activePage}
+        itemsCountPerPage={10}
+        totalItemsCount={!searchPerformed ? reviews.length : searchResults.length}
+        prevPageText="<< Previous"
+        nextPageText="Next >>"
+        hideFirstLastPages
+        pageRangeDisplayed={1}
+        onChange={handlePageChange}
+      />
+    </div>
+  );
+};
+
 const reviewPropType = PropTypes.shape({
   reviewId: PropTypes.number.isRequired,
   firstName: PropTypes.string.isRequired,
