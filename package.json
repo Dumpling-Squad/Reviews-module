@@ -1,8 +1,8 @@
 {
   "name": "reviews_module",
   "version": "1.0.0",
-  "description": "A reviews module to be used as part of our 'Glossier' product page recreation.",
-  "main": "public/index.html",
+  "description": "A reviews module to be used as part of our 'Glossier.com' product page recreation.",
+  "main": "server/index.js",
   "author": "Andrew More <recondomore@gmail.com>",
   "license": "GPL-3.0",
   "repository": {
